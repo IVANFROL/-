@@ -614,6 +614,25 @@
     color: #000000;
 }
 
+/* Карта */
+.contacts__map {
+    margin-top: 60px;
+    text-align: center;
+}
+
+.contacts__map-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.contacts__map iframe {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+}
+
 .accent {
     color: var(--accent-color);
 }
@@ -1622,12 +1641,48 @@ ul:not(.browser-default)>li {
         margin-bottom: 40px;
     }
     
+    .reviews__arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.3);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .reviews__arrow:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-50%) scale(1.1);
+    }
+    
+    .reviews__arrow--prev {
+        left: 10px;
+    }
+    
+    .reviews__arrow--next {
+        right: 10px;
+    }
+    
     .reviews__track-mobile {
         display: flex;
         transition: transform 0.5s ease-in-out;
+        width: 100%;
     }
     
     .reviews__slide-mobile {
+        width: 100%;
         min-width: 100%;
         flex-shrink: 0;
         padding: 0 15px;
@@ -1695,6 +1750,19 @@ ul:not(.browser-default)>li {
     .contacts__grid {
         grid-template-columns: repeat(1, 1fr);
         gap: 50px 0;
+    }
+
+    .contacts__map {
+        margin-top: 40px;
+    }
+
+    .contacts__map-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .contacts__map iframe {
+        height: 300px;
     }
 
     .footer__container {
