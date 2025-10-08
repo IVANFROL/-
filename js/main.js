@@ -253,7 +253,10 @@ function initQuiz() {
     const quizResult = document.getElementById('quizResult');
     
     let currentStep = 1;
-    const totalSteps = steps.length;
+    const totalSteps = 7; // Обновлено количество шагов
+    
+    // Инициализация кнопки "Далее"
+    updateNextButton();
     
     // Маска для телефона
     const phoneInput = document.querySelector('input[name="phone"]');
@@ -263,7 +266,7 @@ function initQuiz() {
     
     // Обработчик кнопки "Далее"
     nextBtn.addEventListener('click', function() {
-        if (validateCurrentStep()) {
+        if (isCurrentStepValid()) {
             if (currentStep < totalSteps) {
                 currentStep++;
                 showStep(currentStep);
@@ -283,10 +286,14 @@ function initQuiz() {
         }
     });
     
+    // Обработчики для валидации
+    quizForm.addEventListener('change', updateNextButton);
+    quizForm.addEventListener('input', updateNextButton);
+    
     // Обработчик отправки формы
     quizForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        if (validateCurrentStep()) {
+        if (isCurrentStepValid()) {
             submitQuiz();
         }
     });
@@ -321,10 +328,52 @@ function initQuiz() {
         progressText.textContent = `${currentStep} из ${totalSteps}`;
     }
     
+    // Проверка валидности текущего шага
+    function isCurrentStepValid() {
+        const currentStepElement = document.querySelector(`.quiz-step[data-step="${currentStep}"]`);
+        if (!currentStepElement) return false;
+        
+        // Проверяем radio кнопки
+        const radioInputs = currentStepElement.querySelectorAll('input[type="radio"]');
+        if (radioInputs.length > 0) {
+            const isRadioSelected = Array.from(radioInputs).some(input => input.checked);
+            if (!isRadioSelected) return false;
+        }
+        
+        // Проверяем обязательные поля (имя и телефон на последнем шаге)
+        if (currentStep === totalSteps) {
+            const nameInput = currentStepElement.querySelector('input[name="name"]');
+            const phoneInput = currentStepElement.querySelector('input[name="phone"]');
+            
+            if (nameInput && !nameInput.value.trim()) return false;
+            if (phoneInput && !phoneInput.value.trim()) return false;
+        }
+        
+        return true;
+    }
+    
+    // Обновление состояния кнопки "Далее"
+    function updateNextButton() {
+        const isValid = isCurrentStepValid();
+        if (nextBtn) {
+            nextBtn.disabled = !isValid;
+            if (isValid) {
+                nextBtn.style.opacity = '1';
+                nextBtn.style.cursor = 'pointer';
+            } else {
+                nextBtn.style.opacity = '0.5';
+                nextBtn.style.cursor = 'not-allowed';
+            }
+        }
+    }
+    
     function updateButtons() {
         prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
         nextBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
         submitBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+        
+        // Обновляем состояние кнопки "Далее"
+        updateNextButton();
     }
     
     function validateCurrentStep() {
@@ -434,41 +483,50 @@ function initQuiz() {
     }
     
     function formatTelegramMessage(data) {
-        const serviceTypes = {
-            'apartment_repair': 'Ремонт квартиры',
-            'house_repair': 'Ремонт дома',
-            'office_repair': 'Ремонт офиса/коммерческого помещения',
-            'construction': 'Строительство с нуля',
-            'other': 'Другое'
-        };
-        
-        const workTypes = {
-            'rough_repair': 'Черновой ремонт',
-            'cosmetic_repair': 'Косметический ремонт',
-            'capital_repair': 'Капитальный ремонт',
-            'turnkey_finishing': 'Отделка под ключ'
+        const objectTypes = {
+            'дом-под-ключ': '🏠 Дом под ключ',
+            'пристройка': '🏡 Пристройка',
+            'терраса-веранда': '🌞 Терраса / веранда',
+            'гараж': '🚗 Гараж',
+            'баня': '🧖 Баня',
+            'другое': '➕ Другое'
         };
         
         const areas = {
-            'up_to_50': 'до 50 м²',
-            '50_100': '50–100 м²',
-            '100_200': '100–200 м²',
-            'over_200': 'более 200 м²'
+            'до-30м2': '📏 До 30 м² (маленькая терраса)',
+            '30-60м2': '📏 30–60 м² (средняя пристройка)',
+            '60-100м2': '📏 60–100 м² (небольшой дом)',
+            'более-100м2': '📏 Более 100 м² (большой дом)',
+            'не-знаю': '❓ Затрудняюсь ответить'
         };
         
-        const timelines = {
-            'urgent': 'Срочно (в течение месяца)',
-            '3_months': 'В ближайшие 3 месяца',
-            '3_6_months': 'Через 3–6 месяцев',
-            'considering': 'Пока рассматриваю варианты'
+        const materials = {
+            'каркас': '🪚 Каркас',
+            'кирпич': '🧱 Кирпич',
+            'газобетон-пеноблок': '🔲 Газобетон / пеноблок',
+            'дерево': '🌲 Дерево',
+            'не-определился': '❓ Ещё не определился'
+        };
+        
+        const stages = {
+            'присматриваюсь': '💡 Только присматриваюсь',
+            'есть-идея': '✏️ Есть идея, нужен проект',
+            'есть-проект': '📐 Есть проект, ищу подрядчика',
+            'уже-начал': '🔨 Уже начал, нужна помощь с реализацией'
         };
         
         const budgets = {
-            'up_to_300k': 'до 300 000 ₽',
-            '300k_700k': '300 000–700 000 ₽',
-            '700k_1.5m': '700 000–1 500 000 ₽',
-            'over_1.5m': 'Более 1 500 000 ₽',
-            'not_sure': 'Пока затрудняюсь ответить'
+            'до-500тыс': '💵 До 500 тыс. руб.',
+            '500тыс-1.5млн': '💵 500 тыс. – 1,5 млн руб.',
+            'более-1.5млн': '💵 Более 1,5 млн руб.',
+            'сложно-сказать': '❓ Пока сложно сказать'
+        };
+        
+        const timings = {
+            'ближайший-месяц': '⏳ В ближайший месяц',
+            'через-2-3-месяца': '📆 Через 2–3 месяца',
+            'через-полгода': '🗓 Через полгода',
+            'пока-планирую': '🤔 Пока планирую'
         };
         
         let message = `🏗️ <b>Новая заявка с сайта Happy Build</b>\n\n`;
@@ -477,22 +535,12 @@ function initQuiz() {
         message += `📧 <b>Email:</b> ${data.email || 'Не указано'}\n\n`;
         
         message += `🔧 <b>Детали заявки:</b>\n`;
-        message += `• <b>Услуга:</b> ${serviceTypes[data.service_type] || 'Не указано'}\n`;
-        message += `• <b>Тип работ:</b> ${workTypes[data.work_type] || 'Не указано'}\n`;
+        message += `• <b>Тип объекта:</b> ${objectTypes[data.objectType] || 'Не указано'}\n`;
         message += `• <b>Площадь:</b> ${areas[data.area] || 'Не указано'}\n`;
-        message += `• <b>Сроки:</b> ${timelines[data.timeline] || 'Не указано'}\n`;
-        message += `• <b>Бюджет:</b> ${budgets[data.budget] || 'Не указано'}\n\n`;
-        
-        if (data.materials_help) {
-            message += `✅ <b>Нужна помощь с материалами</b>\n`;
-        }
-        if (data.free_measurement) {
-            message += `✅ <b>Хочет бесплатный выезд замерщика</b>\n`;
-        }
-        
-        if (data.comments) {
-            message += `\n💬 <b>Комментарии:</b>\n${data.comments}\n`;
-        }
+        message += `• <b>Материал:</b> ${materials[data.material] || 'Не указано'}\n`;
+        message += `• <b>Стадия проекта:</b> ${stages[data.stage] || 'Не указано'}\n`;
+        message += `• <b>Бюджет:</b> ${budgets[data.budget] || 'Не указано'}\n`;
+        message += `• <b>Сроки:</b> ${timings[data.timing] || 'Не указано'}\n\n`;
         
         message += `\n🕐 <b>Время заявки:</b> ${new Date().toLocaleString('ru-RU')}`;
         
