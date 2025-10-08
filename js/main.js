@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Инициализация мобильной карусели отзывов
   initMobileReviewsCarousel();
   
+  // Инициализация таймера обратного отсчета
+  initCountdownTimer();
+  
   // Дополнительная проверка через 1 секунду
   setTimeout(function() {
     var materialbox = document.querySelectorAll('.materialboxed');
@@ -679,5 +682,52 @@ function initMobileReviewsCarousel() {
             startAutoSlide();
         }
     });
+}
+
+// Таймер обратного отсчета на 72 часа
+function initCountdownTimer() {
+    const hoursElement = document.getElementById('hours');
+    const minutesElement = document.getElementById('minutes');
+    const secondsElement = document.getElementById('seconds');
+    
+    if (!hoursElement || !minutesElement || !secondsElement) {
+        return;
+    }
+    
+    // Получаем время начала из localStorage или создаем новое
+    let startTime = localStorage.getItem('countdownStartTime');
+    if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem('countdownStartTime', startTime);
+    }
+    
+    // 72 часа в миллисекундах
+    const totalTime = 72 * 60 * 60 * 1000;
+    
+    function updateCountdown() {
+        const now = Date.now();
+        const elapsed = now - parseInt(startTime);
+        const remaining = totalTime - elapsed;
+        
+        if (remaining <= 0) {
+            // Время истекло - сбрасываем таймер
+            startTime = Date.now();
+            localStorage.setItem('countdownStartTime', startTime);
+            updateCountdown();
+            return;
+        }
+        
+        const hours = Math.floor(remaining / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+        
+        hoursElement.textContent = hours.toString().padStart(2, '0');
+        minutesElement.textContent = minutes.toString().padStart(2, '0');
+        secondsElement.textContent = seconds.toString().padStart(2, '0');
+    }
+    
+    // Обновляем таймер каждую секунду
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 }
 

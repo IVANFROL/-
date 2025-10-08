@@ -282,13 +282,63 @@
     }
 }
 
+/* Стили для таймера обратного отсчета */
+.gift-with-timer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.countdown-display {
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 2px solid #ffffff;
+    display: inline-block;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    animation: countdownPulse 1s ease-in-out infinite;
+}
+
+@keyframes countdownPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.free-text {
+    font-weight: 900;
+    font-size: 1.1em;
+    color: #ffeb3b;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    animation: freePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes freePulse {
+    0%, 100% {
+        transform: scale(1);
+        color: #ffeb3b;
+    }
+    50% {
+        transform: scale(1.05);
+        color: #ffc107;
+    }
+}
+
 .feedback__request {
     border: none;
-    width: 175px;
-    height: 49px;
+    width: 220px;
+    height: 60px;
     font-family: 'Oswald';
     font-weight: 500;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
     letter-spacing: 0.05em;
     color: #000;
@@ -297,9 +347,12 @@
     background-color: #fff;
     margin-top: 20px;
     text-align: center;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 18px 20px;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .feedback__request:hover,
@@ -317,8 +370,9 @@
 }
 
 .feedback__icon {
-    vertical-align: middle;
-    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .sevices {
@@ -342,10 +396,12 @@
 
 .services__grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     justify-items: center;
     gap: 30px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .services__grid-item {
@@ -356,6 +412,17 @@
 
 .services__img {
     margin-bottom: 16px;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.services__img:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .services__h4 {
@@ -561,6 +628,22 @@
     flex: 1;
 }
 
+.reviews__author-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.reviews__avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #F7654A;
+    flex-shrink: 0;
+}
+
 .reviews__author {
     font-family: 'Oswald';
     font-weight: 500;
@@ -568,6 +651,7 @@
     line-height: 1.48;
     letter-spacing: 0.02em;
     color: #000000;
+    margin: 0;
 }
 
 .reviews__author.accent {
@@ -1515,7 +1599,8 @@ ul:not(.browser-default)>li {
         padding-left: 15px;
         padding-right: 15px;
         grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        max-width: none;
     }
 
     .services__grid-item {
@@ -1660,6 +1745,17 @@ ul:not(.browser-default)>li {
 
     .feedback__h3 {
         font-size: 20px;
+    }
+    
+    .gift-with-timer {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .countdown-display {
+        font-size: 20px;
+        padding: 6px 12px;
     }
 
     .feedback__container {
@@ -1920,5 +2016,99 @@ ul:not(.browser-default)>li {
     .modal__form-label {
         font-size: 18px;
         line-height: 1.1;
+    }
+}
+
+/* Плавающие кнопки */
+.floating-buttons {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.floating-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.floating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.floating-btn:active {
+    transform: translateY(0);
+}
+
+/* Кнопка WhatsApp (зеленая) */
+.whatsapp-btn {
+    background: #25D366;
+    color: white;
+}
+
+.whatsapp-btn:hover {
+    background: #1DA851;
+}
+
+/* Кнопка телефона (фиолетовая) */
+.phone-btn {
+    background: #694E98;
+    color: white;
+}
+
+.phone-btn:hover {
+    background: #5A4280;
+}
+
+/* Иконки */
+.floating-btn .icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+}
+
+/* Адаптивность для плавающих кнопок */
+@media (max-width: 480px) {
+    .floating-buttons {
+        right: 16px;
+        bottom: 16px;
+    }
+    
+    .floating-btn {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .floating-btn .icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .services__img {
+        height: 200px;
+    }
+    
+    .reviews__avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .reviews__author {
+        font-size: 18px;
     }
 }
