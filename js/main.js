@@ -701,8 +701,8 @@ function initCountdownTimer() {
         localStorage.setItem('countdownStartTime', startTime);
     }
     
-    // 72 часа в миллисекундах
-    const totalTime = 72 * 60 * 60 * 1000;
+    // 24 часа в миллисекундах
+    const totalTime = 24 * 60 * 60 * 1000;
     
     function updateCountdown() {
         const now = Date.now();
